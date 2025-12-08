@@ -3,8 +3,8 @@ package com.mostafa.youtubeclone.service;
 import com.mostafa.youtubeclone.model.User;
 import com.mostafa.youtubeclone.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
+//import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -16,8 +16,9 @@ public class UserService {
     private final UserRepository userRepository;
 
     public User getCurrentUser() {
-        String sub = ((Jwt) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getClaim("sub");
+//        String sub = ((Jwt) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getClaim("sub");
 
+        String sub = "";
         return userRepository.findBySub(sub)
                 .orElseThrow(() -> new IllegalArgumentException("Cannot find user with sub - " + sub));
     }

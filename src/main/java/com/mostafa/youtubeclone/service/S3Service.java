@@ -1,5 +1,6 @@
 package com.mostafa.youtubeclone.service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -16,13 +17,12 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class S3Service implements FileService {
+public class S3Service {
 
     @Value("${cloud.aws.bucket.name}")
     public String bucketName;
-    private final AmazonS3Client amazonS3Client;
+    private final AmazonS3 amazonS3;
 
-    @Override
     public String uploadFile(MultipartFile multipartFile) {
 
         //prepare key
@@ -35,12 +35,12 @@ public class S3Service implements FileService {
         metadata.setContentType(multipartFile.getContentType());
 
         try {
-            amazonS3Client.putObject(bucketName, key, multipartFile.getInputStream(), metadata);
+            amazonS3.putObject(bucketName, key, multipartFile.getInputStream(), metadata);
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "an exception occured while uploading the file");
         }
 
-        amazonS3Client.setObjectAcl(bucketName, key, CannedAccessControlList.PublicRead);
-        return amazonS3Client.getResourceUrl(bucketName, key);
+        amazonS3.setObjectAcl(bucketName, key, CannedAccessControlList.PublicRead);
+        return multipartFile.getOriginalFilename();
     }
 }
