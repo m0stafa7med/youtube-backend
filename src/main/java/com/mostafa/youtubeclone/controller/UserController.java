@@ -1,12 +1,12 @@
 package com.mostafa.youtubeclone.controller;
 
 
-//import com.mostafa.youtubeclone.service.UserRegistrationService;
+import com.mostafa.youtubeclone.service.UserRegistrationService;
 import com.mostafa.youtubeclone.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -16,15 +16,15 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserController {
 
-//    private final UserRegistrationService userRegistrationService;
+    private final UserRegistrationService userRegistrationService;
     private final UserService userService;
 
-//    @GetMapping("/register")
-//    @ResponseStatus(HttpStatus.OK)
-//    public String register(Authentication authentication) {
-//        Jwt jwt = (Jwt) authentication.getPrincipal();
-//        return userRegistrationService.registerUser(jwt.getTokenValue());
-//    }
+    @GetMapping("/register")
+    @ResponseStatus(HttpStatus.OK)
+    public String register(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        return userRegistrationService.registerUser(jwt.getTokenValue());
+    }
 
     @PostMapping("subscribe/{userId}")
     @ResponseStatus(HttpStatus.OK)
