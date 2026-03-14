@@ -27,7 +27,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VideoService {
 
-    private final S3Service s3Service;
+    private final FileStorageService fileStorageService;
     private final VideoRepository videoRepository;
     private final UserService userService;
     private final NotificationService notificationService;
@@ -36,7 +36,7 @@ public class VideoService {
     private int maxVideosPerUser;
 
     public UploadVideoResponseDto uploadVideo(MultipartFile multipartFile) {
-        s3Service.validateVideoFile(multipartFile);
+        fileStorageService.validateVideoFile(multipartFile);
 
         User currentUser = userService.getCurrentUser();
         long userVideoCount = videoRepository.countByUserId(currentUser.getId());
@@ -45,7 +45,7 @@ public class VideoService {
                     "Upload limit reached. Maximum " + maxVideosPerUser + " videos per user.");
         }
 
-        String videoUrl = s3Service.uploadFile(multipartFile);
+        String videoUrl = fileStorageService.uploadVideo(multipartFile);
         var video = new Video();
         video.setVideoUrl(videoUrl);
         video.setCreatedAt(LocalDateTime.now());
@@ -82,16 +82,16 @@ public class VideoService {
     }
 
     public String uploadThumbnail(MultipartFile file, String videoId) {
-        s3Service.validateThumbnailFile(file);
+        fileStorageService.validateThumbnailFile(file);
 
         var savedVideo = getVideoById(videoId);
 
-        // Delete old thumbnail from S3 if replacing
+        // Delete old thumbnail if replacing
         if (savedVideo.getThumbnailUrl() != null) {
-            s3Service.deleteFile(savedVideo.getThumbnailUrl());
+            fileStorageService.deleteFile(savedVideo.getThumbnailUrl());
         }
 
-        String thumbnailUrl = s3Service.uploadFile(file);
+        String thumbnailUrl = fileStorageService.uploadThumbnail(file);
         savedVideo.setThumbnailUrl(thumbnailUrl);
 
         videoRepository.save(savedVideo);
@@ -279,10 +279,10 @@ public class VideoService {
         }
 
         if (video.getVideoUrl() != null) {
-            s3Service.deleteFile(video.getVideoUrl());
+            fileStorageService.deleteFile(video.getVideoUrl());
         }
         if (video.getThumbnailUrl() != null) {
-            s3Service.deleteFile(video.getThumbnailUrl());
+            fileStorageService.deleteFile(video.getThumbnailUrl());
         }
 
         videoRepository.deleteById(videoId);
