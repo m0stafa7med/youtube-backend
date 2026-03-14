@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,10 @@ public class Video {
     private VideoStatus videoStatus;
     private AtomicInteger viewCount = new AtomicInteger(0);
     private String thumbnailUrl;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private Long duration;
+    private String category;
     private List<Comment> comments = new ArrayList<>();
 
 

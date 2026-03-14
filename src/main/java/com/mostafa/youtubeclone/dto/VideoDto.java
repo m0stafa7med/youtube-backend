@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 
@@ -24,5 +25,11 @@ public class VideoDto {
     private Integer likeCount;
     private Integer dislikeCount;
     private Integer viewCount;
+    private LocalDateTime createdAt;
+    private Long duration;
+    private String category;
+    private String userId;
+    private String userFullName;
+    private String userPicture;
 }
 

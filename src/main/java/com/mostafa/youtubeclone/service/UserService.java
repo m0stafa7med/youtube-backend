@@ -1,7 +1,9 @@
 package com.mostafa.youtubeclone.service;
 
+import com.mostafa.youtubeclone.dto.UserDto;
 import com.mostafa.youtubeclone.model.User;
 import com.mostafa.youtubeclone.repository.UserRepository;
+import com.mostafa.youtubeclone.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -14,6 +16,7 @@ import java.util.Set;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final VideoRepository videoRepository;
 
     public User getCurrentUser() {
         String sub = ((Jwt) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getClaim("sub");
@@ -87,8 +90,21 @@ public class UserService {
         return user.getVideoHistory();
     }
 
-    private User getUserById(String userId) {
+    public User getUserById(String userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Cannot find user with userId " + userId));
+    }
+
+    public UserDto getUserProfile(String userId) {
+        User user = getUserById(userId);
+        int videoCount = videoRepository.findByUserId(userId).size();
+        return UserDto.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .picture(user.getPicture())
+                .emailAddress(user.getEmailAddress())
+                .subscriberCount(user.getSubscribers() != null ? user.getSubscribers().size() : 0)
+                .videoCount(videoCount)
+                .build();
     }
 }

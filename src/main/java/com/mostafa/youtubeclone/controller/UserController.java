@@ -1,14 +1,18 @@
 package com.mostafa.youtubeclone.controller;
 
 
+import com.mostafa.youtubeclone.dto.UserDto;
+import com.mostafa.youtubeclone.dto.VideoDto;
 import com.mostafa.youtubeclone.service.UserRegistrationService;
 import com.mostafa.youtubeclone.service.UserService;
+import com.mostafa.youtubeclone.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -18,6 +22,7 @@ public class UserController {
 
     private final UserRegistrationService userRegistrationService;
     private final UserService userService;
+    private final VideoService videoService;
 
     @GetMapping("/register")
     @ResponseStatus(HttpStatus.OK)
@@ -46,5 +51,16 @@ public class UserController {
         return userService.userHistory(userId);
     }
 
+    @GetMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto getUserProfile(@PathVariable String userId) {
+        return userService.getUserProfile(userId);
+    }
+
+    @GetMapping("/{userId}/videos")
+    @ResponseStatus(HttpStatus.OK)
+    public List<VideoDto> getUserVideos(@PathVariable String userId) {
+        return videoService.getUserVideos(userId);
+    }
 
 }

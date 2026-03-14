@@ -1,0 +1,16 @@
+# Build
+target/
+
+# IDE
+.idea/
+*.iml
+
+# OS
+.DS_Store
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Environment
+*.env
+application-local.properties
