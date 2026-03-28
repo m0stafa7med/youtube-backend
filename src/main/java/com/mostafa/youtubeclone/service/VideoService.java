@@ -9,6 +9,8 @@ import com.mostafa.youtubeclone.model.Video;
 import com.mostafa.youtubeclone.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -108,7 +110,10 @@ public class VideoService {
         Video savedVideo = getVideoById(videoId);
 
         increaseVideoCount(savedVideo);
-        userService.addVideoToHistory(videoId);
+        if (SecurityContextHolder.getContext().getAuthentication() != null
+                && SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Jwt) {
+            userService.addVideoToHistory(videoId);
+        }
 
         return mapToVideoDto(savedVideo);
     }
