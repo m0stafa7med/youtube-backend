@@ -93,6 +93,12 @@ public class VideoController {
         return videoService.getTrendingVideos();
     }
 
+    @GetMapping("/history")
+    @ResponseStatus(HttpStatus.OK)
+    public List<VideoDto> getHistory() {
+        return videoService.getHistory();
+    }
+
     @DeleteMapping("/{videoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteVideo(@PathVariable String videoId) {

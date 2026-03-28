@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -343,6 +344,16 @@ public class VideoService {
 
     public List<VideoDto> getUserVideos(String userId) {
         List<Video> videos = videoRepository.findByUserId(userId);
+        return videos.stream().map(this::mapToVideoDto).toList();
+    }
+
+    public List<VideoDto> getHistory() {
+        User currentUser = userService.getCurrentUser();
+        Set<String> videoHistory = currentUser.getVideoHistory();
+        if (videoHistory == null || videoHistory.isEmpty()) {
+            return List.of();
+        }
+        List<Video> videos = videoRepository.findAllById(videoHistory);
         return videos.stream().map(this::mapToVideoDto).toList();
     }
 }
