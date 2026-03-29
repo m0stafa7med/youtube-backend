@@ -112,7 +112,11 @@ public class VideoService {
         increaseVideoCount(savedVideo);
         if (SecurityContextHolder.getContext().getAuthentication() != null
                 && SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Jwt) {
-            userService.addVideoToHistory(videoId);
+            try {
+                userService.addVideoToHistory(videoId);
+            } catch (IllegalArgumentException e) {
+                // User authenticated but not registered yet — skip history tracking
+            }
         }
 
         return mapToVideoDto(savedVideo);

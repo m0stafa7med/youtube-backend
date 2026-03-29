@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -23,6 +24,11 @@ public class UserService {
 
         return userRepository.findBySub(sub)
                 .orElseThrow(() -> new IllegalArgumentException("Cannot find user with sub - " + sub));
+    }
+
+    public Optional<User> findCurrentUser() {
+        String sub = ((Jwt) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getClaim("sub");
+        return userRepository.findBySub(sub);
     }
 
     public void addToLikedVideos(String videoId) {
