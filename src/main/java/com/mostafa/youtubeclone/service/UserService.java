@@ -83,6 +83,13 @@ public class UserService {
         userRepository.save(currentUser);
     }
 
+    public boolean isSubscribed(String userId) {
+        Optional<User> currentUser = findCurrentUser();
+        if (currentUser.isEmpty()) return false;
+        Set<String> subscribedTo = currentUser.get().getSubscribedToUsers();
+        return subscribedTo != null && subscribedTo.contains(userId);
+    }
+
     public void subscribeUser(String userId) {
         User currentUser = getCurrentUser();
         currentUser.addToSubscribedToUsers(userId);

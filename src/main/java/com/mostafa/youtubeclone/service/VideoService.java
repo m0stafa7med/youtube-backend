@@ -205,10 +205,11 @@ public class VideoService {
 
     public void addComment(String videoId, CommentDto commentDto) {
         Video video = getVideoById(videoId);
+        User currentUser = userService.getCurrentUser();
         Comment comment = new Comment();
         comment.setId(UUID.randomUUID().toString());
         comment.setText(commentDto.getCommentText());
-        comment.setAuthorId(commentDto.getAuthorId());
+        comment.setAuthorId(currentUser.getId());
         comment.setCreatedAt(LocalDateTime.now());
         video.addComment(comment);
 
@@ -334,6 +335,7 @@ public class VideoService {
 
     public void addReply(String videoId, String commentId, CommentDto commentDto) {
         Video video = getVideoById(videoId);
+        User currentUser = userService.getCurrentUser();
 
         Comment parentComment = video.getComments().stream()
                 .filter(comment -> comment.getId().equals(commentId))
@@ -343,7 +345,7 @@ public class VideoService {
         Comment reply = new Comment();
         reply.setId(UUID.randomUUID().toString());
         reply.setText(commentDto.getCommentText());
-        reply.setAuthorId(commentDto.getAuthorId());
+        reply.setAuthorId(currentUser.getId());
         reply.setCreatedAt(LocalDateTime.now());
         reply.setParentCommentId(commentId);
 
