@@ -18,17 +18,31 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final VideoRepository videoRepository;
+    private final UserRegistrationService userRegistrationService;
 
     public User getCurrentUser() {
-        String sub = ((Jwt) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getClaim("sub");
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String sub = jwt.getClaim("sub");
 
         return userRepository.findBySub(sub)
-                .orElseThrow(() -> new IllegalArgumentException("Cannot find user with sub - " + sub));
+                .orElseGet(() -> {
+                    // Auto-register the user if they have a valid JWT but aren't in the database
+                    userRegistrationService.registerUser(jwt.getTokenValue());
+                    return userRepository.findBySub(sub)
+                            .orElseThrow(() -> new IllegalArgumentException("Cannot find user with sub - " + sub));
+                });
     }
 
     public Optional<User> findCurrentUser() {
-        String sub = ((Jwt) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getClaim("sub");
-        return userRepository.findBySub(sub);
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String sub = jwt.getClaim("sub");
+        Optional<User> user = userRepository.findBySub(sub);
+        if (user.isEmpty()) {
+            // Auto-register
+            userRegistrationService.registerUser(jwt.getTokenValue());
+            user = userRepository.findBySub(sub);
+        }
+        return user;
     }
 
     public void addToLikedVideos(String videoId) {
