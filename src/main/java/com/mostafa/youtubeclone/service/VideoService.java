@@ -367,4 +367,25 @@ public class VideoService {
         List<Video> videos = videoRepository.findAllById(videoHistory);
         return videos.stream().map(this::mapToVideoDto).toList();
     }
+
+    public List<VideoDto> getLikedVideos() {
+        User currentUser = userService.getCurrentUser();
+        Set<String> likedVideos = currentUser.getLikedVideos();
+        if (likedVideos == null || likedVideos.isEmpty()) {
+            return List.of();
+        }
+        List<Video> videos = videoRepository.findAllById(likedVideos);
+        return videos.stream().map(this::mapToVideoDto).toList();
+    }
+
+    public List<VideoDto> getSubscriptionVideos() {
+        User currentUser = userService.getCurrentUser();
+        Set<String> subscribedToUsers = currentUser.getSubscribedToUsers();
+        if (subscribedToUsers == null || subscribedToUsers.isEmpty()) {
+            return List.of();
+        }
+        List<Video> videos = videoRepository.findByUserIdIn(subscribedToUsers);
+        videos.sort((v1, v2) -> v2.getCreatedAt().compareTo(v1.getCreatedAt()));
+        return videos.stream().map(this::mapToVideoDto).toList();
+    }
 }

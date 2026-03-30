@@ -99,6 +99,18 @@ public class VideoController {
         return videoService.getHistory();
     }
 
+    @GetMapping("/liked")
+    @ResponseStatus(HttpStatus.OK)
+    public List<VideoDto> getLikedVideos() {
+        return videoService.getLikedVideos();
+    }
+
+    @GetMapping("/subscriptions")
+    @ResponseStatus(HttpStatus.OK)
+    public List<VideoDto> getSubscriptionVideos() {
+        return videoService.getSubscriptionVideos();
+    }
+
     @DeleteMapping("/{videoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteVideo(@PathVariable String videoId) {

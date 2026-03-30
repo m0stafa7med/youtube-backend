@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface VideoRepository extends MongoRepository<Video, String> {
@@ -15,4 +16,5 @@ public interface VideoRepository extends MongoRepository<Video, String> {
     List<Video> findByCategory(String category);
     Page<Video> findByCategory(String category, Pageable pageable);
     Page<Video> findByTagsContaining(String tag, Pageable pageable);
+    List<Video> findByUserIdIn(Collection<String> userIds);
 }
