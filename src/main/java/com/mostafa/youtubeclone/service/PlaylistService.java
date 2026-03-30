@@ -38,6 +38,12 @@ public class PlaylistService {
         return playlists.stream().map(this::mapToPlaylistDto).toList();
     }
 
+    public List<PlaylistDto> getMyPlaylists() {
+        String userId = userService.getCurrentUser().getId();
+        List<Playlist> playlists = playlistRepository.findByUserId(userId);
+        return playlists.stream().map(this::mapToPlaylistDto).toList();
+    }
+
     public void addVideoToPlaylist(String playlistId, String videoId) {
         Playlist playlist = getPlaylistById(playlistId);
         playlist.addVideo(videoId);

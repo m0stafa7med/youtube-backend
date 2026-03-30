@@ -27,6 +27,12 @@ public class PlaylistController {
         return playlistService.getPlaylist(playlistId);
     }
 
+    @GetMapping("/my")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PlaylistDto> getMyPlaylists() {
+        return playlistService.getMyPlaylists();
+    }
+
     @GetMapping("/user/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public List<PlaylistDto> getUserPlaylists(@PathVariable String userId) {
